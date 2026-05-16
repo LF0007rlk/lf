@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal Escolar Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+<!-- ================= LOGIN ================= -->
+<div id="loginPage" class="h-screen flex items-center justify-center">
+  <div class="bg-white p-6 rounded shadow w-96">
+    <h1 class="text-2xl font-bold mb-4">Portal Escolar</h1>
+
+    <input id="user" class="border p-2 w-full mb-2" placeholder="Usuário">
+    <input id="pass" type="password" class="border p-2 w-full mb-4" placeholder="Senha">
+
+    <button onclick="login()" class="bg-blue-600 text-white w-full p-2 rounded">
+      Entrar
+    </button>
+
+    <p class="text-xs text-gray-500 mt-2">
+      admin/admin | prof/123 | aluno/123
+    </p>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden flex h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-blue-900 text-white p-4 space-y-2">
+  <h1 class="text-xl font-bold mb-4">🏫 Escola</h1>
+
+  <button onclick="go('dashboard')" class="w-full text-left p-2 hover:bg-blue-700 rounded">Dashboard</button>
+  <button onclick="go('students')" class="w-full text-left p-2 hover:bg-blue-700 rounded">Alunos</button>
+  <button onclick="go('classes')" class="w-full text-left p-2 hover:bg-blue-700 rounded">Turmas</button>
+  <button onclick="go('grades')" class="w-full text-left p-2 hover:bg-blue-700 rounded">Notas</button>
+  <button onclick="go('attendance')" class="w-full text-left p-2 hover:bg-blue-700 rounded">Frequência</button>
+  <button onclick="go('messages')" class="w-full text-left p-2 hover:bg-blue-700 rounded">Mensagens</button>
+
+  <button onclick="logout()" class="w-full bg-red-500 p-2 rounded mt-6">
+    Sair
+  </button>
+</aside>
+
+<!-- CONTENT -->
+<main class="flex-1 p-6 overflow-y-auto">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="page">
+  <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-white p-4 rounded shadow">
+      <p class="font-bold">Alunos</p>
+      <p id="dashStudents">0</p>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+      <p class="font-bold">Turmas</p>
+      <p id="dashClasses">0</p>
+    </div>
+
+    <div class="bg-white p-4 rounded shadow">
+      <p class="font-bold">Média geral</p>
+      <p id="dashAvg">0</p>
+    </div>
+  </div>
+</section>
+
+<!-- ALUNOS -->
+<section id="students" class="page hidden">
+  <h1 class="text-xl font-bold mb-4">Alunos</h1>
+
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <input id="sName" class="border p-2 w-full mb-2" placeholder="Nome">
+    <input id="sClass" class="border p-2 w-full mb-2" placeholder="Turma">
+    <button onclick="addStudent()" class="bg-blue-600 text-white p-2 w-full rounded">
+      Adicionar
+    </button>
+  </div>
+
+  <div id="studentList"></div>
+</section>
+
+<!-- TURMAS -->
+<section id="classes" class="page hidden">
+  <h1 class="text-xl font-bold mb-4">Turmas</h1>
+
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <input id="cName" class="border p-2 w-full mb-2" placeholder="Nome da turma">
+    <button onclick="addClass()" class="bg-green-600 text-white p-2 w-full rounded">
+      Criar
+    </button>
+  </div>
+
+  <div id="classList"></div>
+</section>
+
+<!-- NOTAS -->
+<section id="grades" class="page hidden">
+  <h1 class="text-xl font-bold mb-4">Notas</h1>
+
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <input id="gStudent" class="border p-2 w-full mb-2" placeholder="Nome aluno">
+    <input id="gSubject" class="border p-2 w-full mb-2" placeholder="Disciplina">
+    <input id="gValue" type="number" class="border p-2 w-full mb-2" placeholder="Nota">
+    <button onclick="addGrade()" class="bg-purple-600 text-white p-2 w-full rounded">
+      Adicionar
+    </button>
+  </div>
+
+  <div id="gradeList"></div>
+</section>
+
+<!-- FREQUÊNCIA -->
+<section id="attendance" class="page hidden">
+  <h1 class="text-xl font-bold mb-4">Frequência</h1>
+
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <input id="aStudent" class="border p-2 w-full mb-2" placeholder="Aluno">
+    <select id="aStatus" class="border p-2 w-full mb-2">
+      <option>Presente</option>
+      <option>Faltou</option>
+    </select>
+    <button onclick="addAttendance()" class="bg-yellow-600 text-white p-2 w-full rounded">
+      Registrar
+    </button>
+  </div>
+
+  <div id="attList"></div>
+</section>
+
+<!-- MENSAGENS -->
+<section id="messages" class="page hidden">
+  <h1 class="text-xl font-bold mb-4">Mensagens</h1>
+
+  <div class="bg-white p-4 rounded shadow mb-4">
+    <input id="msg" class="border p-2 w-full mb-2" placeholder="Mensagem">
+    <button onclick="sendMsg()" class="bg-indigo-600 text-white p-2 w-full rounded">
+      Enviar
+    </button>
+  </div>
+
+  <div id="msgList"></div>
+</section>
+
+</main>
+</div>
+
+<script>
+
+/* ================= DB ================= */
+let db = {
+  students: JSON.parse(localStorage.getItem("students")) || [],
+  classes: JSON.parse(localStorage.getItem("classes")) || [],
+  grades: JSON.parse(localStorage.getItem("grades")) || [],
+  attendance: JSON.parse(localStorage.getItem("attendance")) || [],
+  messages: JSON.parse(localStorage.getItem("messages")) || [],
+};
+
+let user = null;
+
+/* ================= LOGIN ================= */
+function login() {
+  const u = user.value;
+  const p = pass.value;
+
+  if (
+    (u === "admin" && p === "admin") ||
+    (u === "prof" && p === "123") ||
+    (u === "aluno" && p === "123")
+  ) {
+    loginPage.classList.add("hidden");
+    app.classList.remove("hidden");
+    renderAll();
+  } else {
+    alert("Login inválido");
+  }
+}
+
+/* ================= NAV ================= */
+function go(page) {
+  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+  document.getElementById(page).classList.remove("hidden");
+}
+
+/* ================= SAVE ================= */
+function save() {
+  localStorage.setItem("students", JSON.stringify(db.students));
+  localStorage.setItem("classes", JSON.stringify(db.classes));
+  localStorage.setItem("grades", JSON.stringify(db.grades));
+  localStorage.setItem("attendance", JSON.stringify(db.attendance));
+  localStorage.setItem("messages", JSON.stringify(db.messages));
+}
+
+/* ================= STUDENTS ================= */
+function addStudent() {
+  db.students.push({
+    id: Date.now(),
+    name: sName.value,
+    class: sClass.value
+  });
+
+  save();
+  renderAll();
+}
+
+function renderStudents() {
+  studentList.innerHTML = db.students.map(s => `
+    <div class="bg-white p-2 mb-2 rounded shadow">
+      ${s.name} (${s.class})
+    </div>
+  `).join("");
+}
+
+/* ================= CLASSES ================= */
+function addClass() {
+  db.classes.push({
+    id: Date.now(),
+    name: cName.value
+  });
+
+  save();
+  renderAll();
+}
+
+function renderClasses() {
+  classList.innerHTML = db.classes.map(c => `
+    <div class="bg-white p-2 mb-2 rounded shadow">
+      ${c.name}
+    </div>
+  `).join("");
+}
+
+/* ================= GRADES ================= */
+function addGrade() {
+  db.grades.push({
+    student: gStudent.value,
+    subject: gSubject.value,
+    value: Number(gValue.value)
+  });
+
+  save();
+  renderAll();
+}
+
+function renderGrades() {
+  gradeList.innerHTML = db.grades.map(g => `
+    <div class="bg-white p-2 mb-2 rounded shadow">
+      ${g.student} - ${g.subject}: ${g.value}
+    </div>
+  `).join("");
+}
+
+/* ================= ATTENDANCE ================= */
+function addAttendance() {
+  db.attendance.push({
+    student: aStudent.value,
+    status: aStatus.value
+  });
+
+  save();
+  renderAll();
+}
+
+function renderAttendance() {
+  attList.innerHTML = db.attendance.map(a => `
+    <div class="bg-white p-2 mb-2 rounded shadow">
+      ${a.student} - ${a.status}
+    </div>
+  `).join("");
+}
+
+/* ================= MESSAGES ================= */
+function sendMsg() {
+  db.messages.push(msg.value);
+  save();
+  renderAll();
+}
+
+function renderMessages() {
+  msgList.innerHTML = db.messages.map(m => `
+    <div class="bg-white p-2 mb-2 rounded shadow">
+      ${m}
+    </div>
+  `).join("");
+}
+
+/* ================= DASHBOARD ================= */
+function dashboard() {
+  dashStudents.innerText = db.students.length;
+  dashClasses.innerText = db.classes.length;
+
+  let avg = db.grades.length
+    ? (db.grades.reduce((a,b)=>a+b.value,0)/db.grades.length).toFixed(2)
+    : 0;
+
+  dashAvg.innerText = avg;
+}
+
+/* ================= RENDER ALL ================= */
+function renderAll() {
+  renderStudents();
+  renderClasses();
+  renderGrades();
+  renderAttendance();
+  renderMessages();
+  dashboard();
+}
+
+/* ================= LOGOUT ================= */
+function logout() {
+  location.reload();
+}
+
+</script>
+
+</body>
+</html>
