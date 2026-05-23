@@ -1,0 +1,1020 @@
+```html id="startup-nexus-ultra"
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NEXUS STARTUP OS</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --bg:#050816;
+  --card:rgba(255,255,255,.05);
+  --line:rgba(255,255,255,.08);
+  --cyan:#22d3ee;
+  --purple:#9333ea;
+  --green:#22c55e;
+  --red:#ef4444;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:Inter,sans-serif;
+  background:var(--bg);
+  color:white;
+  overflow-x:hidden;
+}
+
+/* BACKGROUND */
+
+.bgfx{
+  position:fixed;
+  inset:0;
+  z-index:-3;
+  background:
+  radial-gradient(circle at top left,#06b6d420,transparent 30%),
+  radial-gradient(circle at bottom right,#9333ea20,transparent 30%),
+  #050816;
+}
+
+.gridfx{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background-image:
+  linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+/* GLASS */
+
+.glass{
+  background:var(--card);
+  border:1px solid var(--line);
+  backdrop-filter:blur(16px);
+}
+
+.card{
+  transition:.35s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  border-color:#22d3ee55;
+}
+
+/* NEON */
+
+.neon{
+  box-shadow:
+  0 0 20px rgba(34,211,238,.08),
+  0 0 50px rgba(147,51,234,.08);
+}
+
+/* TEXT */
+
+.gradient{
+  background:linear-gradient(to right,#22d3ee,#818cf8,#c084fc);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* SIDEBAR */
+
+.sidebar-btn{
+  transition:.25s;
+}
+
+.sidebar-btn:hover{
+  background:rgba(255,255,255,.08);
+  transform:scale(1.05);
+}
+
+/* ANIMATION */
+
+.fade{
+  animation:fade .4s ease;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.float{
+  animation:float 6s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0);
+  }
+  50%{
+    transform:translateY(-10px);
+  }
+}
+
+.pulse{
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  from{
+    transform:scale(1);
+    opacity:1;
+  }
+  to{
+    transform:scale(2);
+    opacity:0;
+  }
+}
+
+/* SCROLL */
+
+.scroll::-webkit-scrollbar{
+  width:6px;
+}
+
+.scroll::-webkit-scrollbar-thumb{
+  background:#22d3ee;
+  border-radius:20px;
+}
+
+/* CHAT */
+
+.msg-user{
+  background:#06b6d4;
+  color:black;
+}
+
+.msg-ai{
+  background:#1e293b;
+}
+
+/* TOPBAR */
+
+.search{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.06);
+}
+
+/* KPI */
+
+.kpi{
+  position:relative;
+  overflow:hidden;
+}
+
+.kpi::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+  linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,.04),
+    transparent
+  );
+  transform:translateX(-100%);
+  transition:1s;
+}
+
+.kpi:hover::before{
+  transform:translateX(100%);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bgfx"></div>
+<div class="gridfx"></div>
+
+<!-- LOGIN -->
+
+<div id="loginScreen" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+
+  <div class="glass neon p-10 rounded-[40px] w-[420px] fade">
+
+    <div class="text-center mb-8">
+
+      <h1 class="text-6xl font-black gradient">
+        NEXUS
+      </h1>
+
+      <p class="text-zinc-400 mt-3">
+        Startup School Operating System
+      </p>
+
+    </div>
+
+    <input
+      id="user"
+      placeholder="Usuário"
+      class="w-full search rounded-2xl px-5 py-4 outline-none mb-4"
+    >
+
+    <input
+      id="pass"
+      type="password"
+      placeholder="Senha"
+      class="w-full search rounded-2xl px-5 py-4 outline-none mb-6"
+    >
+
+    <button
+      onclick="login()"
+      class="w-full bg-cyan-400 text-black font-black py-4 rounded-2xl hover:scale-105 transition"
+    >
+      ENTRAR
+    </button>
+
+  </div>
+
+</div>
+
+<!-- APP -->
+
+<div id="app" class="hidden">
+
+<!-- SIDEBAR -->
+
+<aside class="fixed left-0 top-0 h-screen w-28 glass flex flex-col items-center py-6 z-40">
+
+  <div class="text-5xl font-black gradient mb-8 float">
+    NX
+  </div>
+
+  <div class="flex flex-col gap-4">
+
+    <button onclick="tab('dashboard')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      🏠
+    </button>
+
+    <button onclick="tab('analytics')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      📊
+    </button>
+
+    <button onclick="tab('chat')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      🤖
+    </button>
+
+    <button onclick="tab('students')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      👨‍🎓
+    </button>
+
+    <button onclick="tab('finance')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      💰
+    </button>
+
+    <button onclick="tab('calendar')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      📅
+    </button>
+
+    <button onclick="tab('settings')" class="sidebar-btn w-16 h-16 rounded-2xl glass text-2xl">
+      ⚙️
+    </button>
+
+  </div>
+
+  <div class="mt-auto relative">
+
+    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+
+    <div class="absolute inset-0 rounded-full bg-green-400 pulse"></div>
+
+  </div>
+
+</aside>
+
+<!-- MAIN -->
+
+<main class="ml-28 p-8">
+
+<!-- HEADER -->
+
+<header class="flex justify-between items-center mb-10">
+
+  <div>
+
+    <h1 class="text-6xl font-black">
+      NEXUS
+      <span class="gradient">
+        STARTUP OS
+      </span>
+    </h1>
+
+    <p class="text-zinc-400 mt-2">
+      Plataforma inteligente escolar enterprise
+    </p>
+
+  </div>
+
+  <div class="flex items-center gap-4">
+
+    <input
+      id="search"
+      placeholder="Pesquisar..."
+      class="search rounded-2xl px-5 py-4 outline-none w-72"
+    >
+
+    <button
+      onclick="notify('Nova análise da IA 🚀')"
+      class="glass rounded-2xl px-5 py-4"
+    >
+      🔔
+    </button>
+
+    <div class="glass rounded-2xl px-5 py-3 flex items-center gap-3">
+
+      <div class="w-10 h-10 rounded-full bg-cyan-400"></div>
+
+      <div>
+        <p class="font-bold">
+          Admin
+        </p>
+        <p class="text-zinc-400 text-sm">
+          Founder
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</header>
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page fade">
+
+<div class="grid lg:grid-cols-4 gap-6">
+
+  <div class="glass neon rounded-3xl p-6 kpi card">
+
+    <p class="text-zinc-400">
+      Alunos Ativos
+    </p>
+
+    <h2 class="text-5xl font-black mt-3">
+      12.4k
+    </h2>
+
+    <p class="text-green-400 mt-4">
+      +12%
+    </p>
+
+  </div>
+
+  <div class="glass neon rounded-3xl p-6 kpi card">
+
+    <p class="text-zinc-400">
+      Receita Mensal
+    </p>
+
+    <h2 class="text-5xl font-black mt-3">
+      R$92k
+    </h2>
+
+    <p class="text-green-400 mt-4">
+      +8%
+    </p>
+
+  </div>
+
+  <div class="glass neon rounded-3xl p-6 kpi card">
+
+    <p class="text-zinc-400">
+      Engajamento
+    </p>
+
+    <h2 class="text-5xl font-black mt-3">
+      96%
+    </h2>
+
+    <p class="text-green-400 mt-4">
+      +18%
+    </p>
+
+  </div>
+
+  <div class="glass neon rounded-3xl p-6 kpi card">
+
+    <p class="text-zinc-400">
+      IA Processando
+    </p>
+
+    <h2 class="text-5xl font-black mt-3">
+      24TB
+    </h2>
+
+    <p class="text-cyan-400 mt-4">
+      realtime
+    </p>
+
+  </div>
+
+</div>
+
+<div class="grid lg:grid-cols-3 gap-8 mt-8">
+
+  <div class="glass rounded-3xl p-8 lg:col-span-2">
+
+    <div class="flex justify-between mb-8">
+
+      <h2 class="text-3xl font-bold">
+        Analytics
+      </h2>
+
+      <div class="glass px-4 py-2 rounded-full text-cyan-400">
+        IA ANALYTICS
+      </div>
+
+    </div>
+
+    <canvas id="mainChart"></canvas>
+
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+
+    <h2 class="text-3xl font-bold mb-8">
+      IA INSIGHTS
+    </h2>
+
+    <div class="space-y-5">
+
+      <div class="glass rounded-2xl p-5">
+        📈 Engajamento subiu 18%
+      </div>
+
+      <div class="glass rounded-2xl p-5">
+        🧠 IA detectou melhoria acadêmica
+      </div>
+
+      <div class="glass rounded-2xl p-5">
+        🚀 Plataforma estável
+      </div>
+
+      <div class="glass rounded-2xl p-5">
+        ⚠️ 2 salas precisam atenção
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- ANALYTICS -->
+
+<section id="analytics" class="page hidden fade">
+
+<div class="grid lg:grid-cols-2 gap-8">
+
+  <div class="glass rounded-3xl p-8">
+    <canvas id="analyticsChart"></canvas>
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+    <canvas id="financeChart"></canvas>
+  </div>
+
+</div>
+
+</section>
+
+<!-- CHAT -->
+
+<section id="chat" class="page hidden fade">
+
+<div class="glass rounded-3xl p-8 h-[760px] flex flex-col">
+
+  <div class="flex justify-between items-center mb-6">
+
+    <h2 class="text-3xl font-bold">
+      IA Enterprise
+    </h2>
+
+    <div class="text-green-400">
+      ● ONLINE
+    </div>
+
+  </div>
+
+  <div
+    id="messages"
+    class="flex-1 overflow-y-auto scroll space-y-4"
+  ></div>
+
+  <div class="flex gap-4 mt-6">
+
+    <input
+      id="messageInput"
+      placeholder="Converse com a IA..."
+      class="flex-1 search rounded-2xl px-5 py-4 outline-none"
+    >
+
+    <button
+      onclick="sendMessage()"
+      class="bg-cyan-400 text-black font-black px-8 rounded-2xl"
+    >
+      ENVIAR
+    </button>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- STUDENTS -->
+
+<section id="students" class="page hidden fade">
+
+<div class="glass rounded-3xl p-8">
+
+  <div class="flex justify-between mb-8">
+
+    <h2 class="text-3xl font-bold">
+      Gestão de Alunos
+    </h2>
+
+    <button
+      onclick="newStudent()"
+      class="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-black"
+    >
+      NOVO
+    </button>
+
+  </div>
+
+  <div
+    id="studentsGrid"
+    class="grid lg:grid-cols-4 gap-6"
+  ></div>
+
+</div>
+
+</section>
+
+<!-- FINANCE -->
+
+<section id="finance" class="page hidden fade">
+
+<div class="grid lg:grid-cols-3 gap-8">
+
+  <div class="glass rounded-3xl p-8">
+    <p class="text-zinc-400">Receita</p>
+    <h2 class="text-5xl font-black mt-3">R$920k</h2>
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+    <p class="text-zinc-400">Despesas</p>
+    <h2 class="text-5xl font-black mt-3">R$310k</h2>
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+    <p class="text-zinc-400">Lucro</p>
+    <h2 class="text-5xl font-black mt-3 text-green-400">
+      R$610k
+    </h2>
+  </div>
+
+</div>
+
+</section>
+
+<!-- CALENDAR -->
+
+<section id="calendar" class="page hidden fade">
+
+<div class="glass rounded-3xl p-8">
+
+  <h2 class="text-3xl font-bold mb-8">
+    Eventos
+  </h2>
+
+  <div class="grid lg:grid-cols-3 gap-6">
+
+    <div class="glass rounded-3xl p-6">
+      🚀 Feira Tecnológica
+    </div>
+
+    <div class="glass rounded-3xl p-6">
+      🧠 Olimpíada de Matemática
+    </div>
+
+    <div class="glass rounded-3xl p-6">
+      🎓 Formatura
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- SETTINGS -->
+
+<section id="settings" class="page hidden fade">
+
+<div class="glass rounded-3xl p-8">
+
+  <h2 class="text-3xl font-bold mb-8">
+    Configurações
+  </h2>
+
+  <div class="space-y-4">
+
+    <button onclick="backup()" class="w-full glass p-5 rounded-2xl">
+      💾 Backup Sistema
+    </button>
+
+    <button onclick="fakeData()" class="w-full glass p-5 rounded-2xl">
+      🚀 Gerar Dados
+    </button>
+
+    <button onclick="clearData()" class="w-full glass p-5 rounded-2xl">
+      🗑 Limpar
+    </button>
+
+  </div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script>
+
+/* DATABASE */
+
+const DB = {
+
+  students:
+  JSON.parse(localStorage.getItem("students"))
+  || [],
+
+  messages:
+  JSON.parse(localStorage.getItem("messages"))
+  || []
+
+}
+
+/* LOGIN */
+
+function login(){
+
+  document
+  .getElementById("loginScreen")
+  .classList.add("hidden")
+
+  document
+  .getElementById("app")
+  .classList.remove("hidden")
+
+  renderStudents()
+
+  notify("Nexus iniciado 🚀")
+
+}
+
+/* TABS */
+
+function tab(id){
+
+  document
+  .querySelectorAll(".page")
+  .forEach(p=>p.classList.add("hidden"))
+
+  document
+  .getElementById(id)
+  .classList.remove("hidden")
+
+}
+
+/* NOTIFY */
+
+function notify(text){
+
+  const div = document.createElement("div")
+
+  div.className=`
+    fixed
+    top-5
+    right-5
+    glass
+    rounded-2xl
+    p-5
+    fade
+    z-50
+  `
+
+  div.innerHTML=text
+
+  document.body.appendChild(div)
+
+  setTimeout(()=>{
+    div.remove()
+  },3000)
+
+}
+
+/* CHAT IA */
+
+function sendMessage(){
+
+  const input =
+  document.getElementById("messageInput")
+
+  if(!input.value.trim()) return
+
+  DB.messages.push({
+    type:"user",
+    text:input.value
+  })
+
+  renderMessages()
+
+  setTimeout(()=>{
+
+    DB.messages.push({
+      type:"ai",
+      text:aiReply(input.value)
+    })
+
+    renderMessages()
+
+  },800)
+
+  input.value=""
+
+  save()
+
+}
+
+function renderMessages(){
+
+  const container =
+  document.getElementById("messages")
+
+  container.innerHTML=""
+
+  DB.messages.forEach(msg=>{
+
+    container.innerHTML += `
+      <div class="
+        p-5
+        rounded-2xl
+        ${msg.type==="user"
+          ?"msg-user"
+          :"msg-ai"}
+      ">
+        ${msg.text}
+      </div>
+    `
+  })
+
+}
+
+function aiReply(text){
+
+  const replies = [
+
+    "IA analisando desempenho escolar.",
+
+    "Sugiro reforço em matemática.",
+
+    "Engajamento aumentou esta semana.",
+
+    "Nova previsão acadêmica calculada.",
+
+    "A frequência melhorou 14%."
+
+  ]
+
+  return replies[
+    Math.floor(Math.random()*replies.length)
+  ]
+
+}
+
+/* STUDENTS */
+
+function newStudent(){
+
+  const name = prompt("Nome do aluno")
+
+  if(!name) return
+
+  DB.students.push({
+
+    name,
+
+    performance:
+    Math.floor(Math.random()*100)
+
+  })
+
+  save()
+
+  renderStudents()
+
+}
+
+function renderStudents(){
+
+  const grid =
+  document.getElementById("studentsGrid")
+
+  grid.innerHTML=""
+
+  DB.students.forEach(student=>{
+
+    grid.innerHTML += `
+      <div class="glass rounded-3xl p-6 card">
+
+        <div class="text-5xl mb-4">
+          👨‍🎓
+        </div>
+
+        <h3 class="text-2xl font-bold">
+          ${student.name}
+        </h3>
+
+        <p class="text-zinc-400 mt-3">
+          Performance:
+          ${student.performance}%
+        </p>
+
+      </div>
+    `
+  })
+
+}
+
+/* SAVE */
+
+function save(){
+
+  localStorage.setItem(
+    "students",
+    JSON.stringify(DB.students)
+  )
+
+  localStorage.setItem(
+    "messages",
+    JSON.stringify(DB.messages)
+  )
+
+}
+
+/* BACKUP */
+
+function backup(){
+
+  const blob = new Blob(
+    [JSON.stringify(DB,null,2)],
+    {type:"application/json"}
+  )
+
+  const a=document.createElement("a")
+
+  a.href=URL.createObjectURL(blob)
+
+  a.download="nexus-startup-backup.json"
+
+  a.click()
+
+}
+
+/* CLEAR */
+
+function clearData(){
+
+  localStorage.clear()
+
+  location.reload()
+
+}
+
+/* RANDOM */
+
+function fakeData(){
+
+  DB.students.push({
+
+    name:"Aluno IA",
+
+    performance:99
+
+  })
+
+  save()
+
+  renderStudents()
+
+}
+
+/* CHARTS */
+
+new Chart(
+  document.getElementById("mainChart"),
+  {
+    type:"line",
+    data:{
+      labels:[
+        "Jan",
+        "Fev",
+        "Mar",
+        "Abr",
+        "Mai",
+        "Jun"
+      ],
+      datasets:[{
+        label:"Engajamento",
+        data:[62,75,81,84,92,98],
+        borderColor:"#22d3ee",
+        backgroundColor:"rgba(34,211,238,.15)",
+        fill:true,
+        tension:.4
+      }]
+    }
+  }
+)
+
+new Chart(
+  document.getElementById("analyticsChart"),
+  {
+    type:"bar",
+    data:{
+      labels:[
+        "Mat",
+        "Bio",
+        "Hist",
+        "Fis",
+        "Port"
+      ],
+      datasets:[{
+        label:"Performance",
+        data:[92,88,84,79,95],
+        backgroundColor:"#22d3ee"
+      }]
+    }
+  }
+)
+
+new Chart(
+  document.getElementById("financeChart"),
+  {
+    type:"doughnut",
+    data:{
+      labels:[
+        "Receita",
+        "Lucro",
+        "Custos"
+      ],
+      datasets:[{
+        data:[920,610,310],
+        backgroundColor:[
+          "#22d3ee",
+          "#22c55e",
+          "#ef4444"
+        ]
+      }]
+    }
+  }
+)
+
+</script>
+
+</body>
+</html>
+```
