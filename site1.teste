@@ -1,0 +1,1183 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NEXUS SCHOOL AI ULTRA</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+  margin:0;
+  overflow-x:hidden;
+  background:#050816;
+  color:white;
+  font-family:Inter,sans-serif;
+}
+
+.bgfx{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  background:
+  radial-gradient(circle at top left,#0ea5e920,transparent 30%),
+  radial-gradient(circle at bottom right,#9333ea20,transparent 30%),
+  #050816;
+}
+
+.gridfx{
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  background-image:
+  linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+
+.glass{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(16px);
+}
+
+.neon{
+  box-shadow:
+  0 0 20px rgba(0,255,255,.1),
+  0 0 40px rgba(147,51,234,.1);
+}
+
+.card{
+  transition:.35s;
+}
+
+.card:hover{
+  transform:translateY(-5px) scale(1.01);
+}
+
+.gradient{
+  background:linear-gradient(to right,#22d3ee,#818cf8,#c084fc);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.scroll::-webkit-scrollbar{
+  width:6px;
+}
+
+.scroll::-webkit-scrollbar-thumb{
+  background:cyan;
+  border-radius:20px;
+}
+
+.fade{
+  animation:fade .35s ease;
+}
+
+@keyframes fade{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.message-user{
+  background:#06b6d4;
+  color:black;
+}
+
+.message-ai{
+  background:#1e293b;
+}
+
+.online{
+  animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+  from{
+    transform:scale(1);
+    opacity:1;
+  }
+  to{
+    transform:scale(2);
+    opacity:0;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bgfx"></div>
+<div class="gridfx"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+
+  <div class="glass neon p-10 rounded-3xl w-[420px]">
+
+    <h1 class="text-5xl font-black text-center gradient mb-3">
+      NEXUS AI
+    </h1>
+
+    <p class="text-center text-zinc-400 mb-8">
+      Plataforma Escolar Suprema
+    </p>
+
+    <input
+      id="loginUser"
+      placeholder="Usuário"
+      class="w-full glass rounded-2xl p-4 outline-none mb-4"
+    >
+
+    <input
+      id="loginPass"
+      type="password"
+      placeholder="Senha"
+      class="w-full glass rounded-2xl p-4 outline-none mb-6"
+    >
+
+    <button
+      onclick="login()"
+      class="w-full bg-cyan-400 text-black font-black p-4 rounded-2xl hover:scale-105 transition"
+    >
+      ENTRAR
+    </button>
+
+  </div>
+
+</div>
+
+<!-- APP -->
+<div id="app" class="hidden">
+
+<!-- SIDEBAR -->
+<aside class="fixed left-0 top-0 w-24 h-screen glass flex flex-col items-center py-6 gap-6 z-40">
+
+  <div class="text-4xl font-black gradient">
+    NX
+  </div>
+
+  <button onclick="openTab('dashboard')" class="text-3xl">🏠</button>
+  <button onclick="openTab('feed')" class="text-3xl">📢</button>
+  <button onclick="openTab('chat')" class="text-3xl">🤖</button>
+  <button onclick="openTab('schedule')" class="text-3xl">📚</button>
+  <button onclick="openTab('exams')" class="text-3xl">📝</button>
+  <button onclick="openTab('students')" class="text-3xl">👨‍🎓</button>
+  <button onclick="openTab('finance')" class="text-3xl">💰</button>
+  <button onclick="openTab('admin')" class="text-3xl">⚙️</button>
+
+  <div class="mt-auto relative">
+    <div class="w-3 h-3 bg-green-400 rounded-full"></div>
+    <div class="absolute inset-0 bg-green-400 rounded-full online"></div>
+  </div>
+
+</aside>
+
+<!-- MAIN -->
+<main class="ml-24 p-8">
+
+<!-- HEADER -->
+<header class="flex justify-between items-center mb-10">
+
+  <div>
+    <h1 class="text-6xl font-black">
+      NEXUS
+      <span class="gradient">SCHOOL AI</span>
+    </h1>
+
+    <p class="text-zinc-400 mt-2">
+      Sistema escolar cyberpunk full stack
+    </p>
+  </div>
+
+  <div class="flex gap-4">
+
+    <input
+      id="globalSearch"
+      placeholder="Pesquisar..."
+      class="glass rounded-2xl px-5 py-3 outline-none w-72"
+    >
+
+    <button
+      onclick="notify('Nova atualização da IA 🚀')"
+      class="glass px-5 rounded-2xl"
+    >
+      🔔
+    </button>
+
+  </div>
+
+</header>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="tab fade">
+
+<div class="grid lg:grid-cols-4 gap-6">
+
+  <div class="glass neon rounded-3xl p-6 card">
+    <p class="text-zinc-400">Alunos</p>
+    <h2 id="studentsCount" class="text-5xl font-black mt-3">1240</h2>
+  </div>
+
+  <div class="glass neon rounded-3xl p-6 card">
+    <p class="text-zinc-400">Professores</p>
+    <h2 class="text-5xl font-black mt-3">87</h2>
+  </div>
+
+  <div class="glass neon rounded-3xl p-6 card">
+    <p class="text-zinc-400">Cursos</p>
+    <h2 class="text-5xl font-black mt-3">26</h2>
+  </div>
+
+  <div class="glass neon rounded-3xl p-6 card">
+    <p class="text-zinc-400">Receita</p>
+    <h2 class="text-5xl font-black mt-3">R$92k</h2>
+  </div>
+
+</div>
+
+<div class="grid lg:grid-cols-2 gap-8 mt-8">
+
+  <div class="glass rounded-3xl p-8">
+
+    <div class="flex justify-between mb-8">
+
+      <h2 class="text-3xl font-bold">
+        Desempenho Escolar
+      </h2>
+
+      <div class="text-cyan-400">
+        IA ANALISANDO
+      </div>
+
+    </div>
+
+    <canvas id="performanceChart"></canvas>
+
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+
+    <h2 class="text-3xl font-bold mb-8">
+      IA Escolar
+    </h2>
+
+    <div class="space-y-5">
+
+      <div class="glass rounded-2xl p-5">
+        📈 Engajamento aumentou 12%
+      </div>
+
+      <div class="glass rounded-2xl p-5">
+        🧠 IA detectou melhora em matemática
+      </div>
+
+      <div class="glass rounded-2xl p-5">
+        ⚠️ 14 alunos com baixa frequência
+      </div>
+
+      <div class="glass rounded-2xl p-5">
+        🚀 Sistema online e estável
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- FEED -->
+<section id="feed" class="tab hidden fade">
+
+<div class="grid lg:grid-cols-3 gap-8">
+
+  <div class="lg:col-span-2">
+
+    <div class="glass rounded-3xl p-8 mb-8">
+
+      <h2 class="text-3xl font-bold mb-5">
+        Publicar Aviso
+      </h2>
+
+      <textarea
+        id="postInput"
+        class="w-full h-40 glass rounded-2xl p-5 outline-none"
+      ></textarea>
+
+      <button
+        onclick="createPost()"
+        class="mt-5 bg-cyan-400 text-black font-black px-8 py-4 rounded-2xl"
+      >
+        PUBLICAR
+      </button>
+
+    </div>
+
+    <div id="posts" class="space-y-6"></div>
+
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+
+    <h2 class="text-3xl font-bold mb-8">
+      Ranking
+    </h2>
+
+    <div class="space-y-4">
+
+      <div class="glass rounded-2xl p-4 flex justify-between">
+        <span>🥇 Ana</span>
+        <span>98pts</span>
+      </div>
+
+      <div class="glass rounded-2xl p-4 flex justify-between">
+        <span>🥈 Lucas</span>
+        <span>95pts</span>
+      </div>
+
+      <div class="glass rounded-2xl p-4 flex justify-between">
+        <span>🥉 Rafael</span>
+        <span>92pts</span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- CHAT -->
+<section id="chat" class="tab hidden fade">
+
+<div class="grid lg:grid-cols-4 gap-8">
+
+  <!-- ROOMS -->
+  <div class="glass rounded-3xl p-6">
+
+    <h2 class="text-3xl font-bold mb-6">
+      Salas
+    </h2>
+
+    <div class="space-y-4">
+
+      <button onclick="changeRoom('Geral')" class="w-full glass p-4 rounded-2xl">
+        📢 Geral
+      </button>
+
+      <button onclick="changeRoom('3 Ano')" class="w-full glass p-4 rounded-2xl">
+        🎓 3º Ano
+      </button>
+
+      <button onclick="changeRoom('Professores')" class="w-full glass p-4 rounded-2xl">
+        👨‍🏫 Professores
+      </button>
+
+      <button onclick="changeRoom('IA')" class="w-full glass p-4 rounded-2xl">
+        🤖 IA
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- CHAT -->
+  <div class="glass rounded-3xl p-8 lg:col-span-3 h-[700px] flex flex-col">
+
+    <div class="flex justify-between mb-6">
+
+      <h2 id="roomTitle" class="text-3xl font-bold">
+        📢 Geral
+      </h2>
+
+      <div class="text-green-400">
+        ● ONLINE
+      </div>
+
+    </div>
+
+    <div
+      id="messages"
+      class="flex-1 overflow-y-auto scroll space-y-4"
+    ></div>
+
+    <div class="flex gap-4 mt-6">
+
+      <input
+        id="messageInput"
+        placeholder="Digite..."
+        class="flex-1 glass rounded-2xl px-5 py-4 outline-none"
+      >
+
+      <button
+        onclick="sendMessage()"
+        class="bg-cyan-400 text-black font-black px-8 rounded-2xl"
+      >
+        ENVIAR
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- HORÁRIO -->
+<section id="schedule" class="tab hidden fade">
+
+<div class="glass rounded-3xl p-8">
+
+  <div class="flex justify-between mb-8">
+
+    <h2 class="text-3xl font-bold">
+      Horário Inteligente
+    </h2>
+
+    <button
+      onclick="generateSchedule()"
+      class="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-black"
+    >
+      GERAR IA
+    </button>
+
+  </div>
+
+  <div class="overflow-auto">
+
+    <table class="w-full border-separate border-spacing-4">
+
+      <thead>
+        <tr class="text-zinc-400">
+          <th>Hora</th>
+          <th>Seg</th>
+          <th>Ter</th>
+          <th>Qua</th>
+          <th>Qui</th>
+          <th>Sex</th>
+        </tr>
+      </thead>
+
+      <tbody id="scheduleTable"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- PROVAS -->
+<section id="exams" class="tab hidden fade">
+
+<div class="grid lg:grid-cols-2 gap-8">
+
+  <div class="glass rounded-3xl p-8">
+
+    <div class="flex justify-between mb-8">
+
+      <h2 class="text-3xl font-bold">
+        Sistema de Provas
+      </h2>
+
+      <button
+        onclick="addExam()"
+        class="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-black"
+      >
+        NOVA
+      </button>
+
+    </div>
+
+    <div id="examList" class="space-y-5"></div>
+
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+
+    <canvas id="examChart"></canvas>
+
+  </div>
+
+</div>
+
+</section>
+
+<!-- STUDENTS -->
+<section id="students" class="tab hidden fade">
+
+<div class="glass rounded-3xl p-8">
+
+  <div class="flex justify-between mb-8">
+
+    <h2 class="text-3xl font-bold">
+      Gestão de Alunos
+    </h2>
+
+    <button
+      onclick="addStudent()"
+      class="bg-cyan-400 text-black px-6 py-3 rounded-2xl font-black"
+    >
+      NOVO
+    </button>
+
+  </div>
+
+  <div id="studentsList" class="grid lg:grid-cols-3 gap-6"></div>
+
+</div>
+
+</section>
+
+<!-- FINANCE -->
+<section id="finance" class="tab hidden fade">
+
+<div class="grid lg:grid-cols-3 gap-8">
+
+  <div class="glass rounded-3xl p-8">
+    <p class="text-zinc-400">Receita</p>
+    <h2 class="text-5xl font-black mt-3">R$92.000</h2>
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+    <p class="text-zinc-400">Despesas</p>
+    <h2 class="text-5xl font-black mt-3">R$34.000</h2>
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+    <p class="text-zinc-400">Lucro</p>
+    <h2 class="text-5xl font-black mt-3 text-green-400">
+      R$58.000
+    </h2>
+  </div>
+
+</div>
+
+</section>
+
+<!-- ADMIN -->
+<section id="admin" class="tab hidden fade">
+
+<div class="grid lg:grid-cols-2 gap-8">
+
+  <div class="glass rounded-3xl p-8">
+
+    <h2 class="text-3xl font-bold mb-8">
+      Administração
+    </h2>
+
+    <div class="space-y-4">
+
+      <button onclick="backup()" class="w-full glass p-5 rounded-2xl">
+        💾 Backup JSON
+      </button>
+
+      <button onclick="clearData()" class="w-full glass p-5 rounded-2xl">
+        🗑 Limpar Sistema
+      </button>
+
+      <button onclick="fakeData()" class="w-full glass p-5 rounded-2xl">
+        🚀 Dados Aleatórios
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="glass rounded-3xl p-8">
+
+    <h2 class="text-3xl font-bold mb-8">
+      Banco de Dados
+    </h2>
+
+    <pre
+      id="db"
+      class="text-cyan-300 text-sm overflow-auto h-[450px]"
+    ></pre>
+
+  </div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script>
+
+/* DATABASE */
+
+const DB = {
+
+  posts: JSON.parse(localStorage.getItem("posts")) || [],
+
+  messages: JSON.parse(localStorage.getItem("messages")) || {
+    "Geral":[],
+    "3 Ano":[],
+    "Professores":[],
+    "IA":[]
+  },
+
+  exams: JSON.parse(localStorage.getItem("exams")) || [],
+
+  students: JSON.parse(localStorage.getItem("students")) || []
+
+}
+
+let currentRoom = "Geral"
+
+/* LOGIN */
+
+function login(){
+
+  const user = document.getElementById("loginUser").value
+
+  if(user.length < 2){
+    alert("Digite usuário")
+    return
+  }
+
+  document.getElementById("loginScreen")
+  .classList.add("hidden")
+
+  document.getElementById("app")
+  .classList.remove("hidden")
+
+  notify("Sistema iniciado 🚀")
+
+  renderPosts()
+  renderMessages()
+  renderExams()
+  renderStudents()
+  renderDB()
+  generateSchedule()
+
+}
+
+/* TABS */
+
+function openTab(id){
+
+  document.querySelectorAll(".tab")
+  .forEach(t=>t.classList.add("hidden"))
+
+  document.getElementById(id)
+  .classList.remove("hidden")
+
+}
+
+/* NOTIFY */
+
+function notify(text){
+
+  const div = document.createElement("div")
+
+  div.className = `
+    fixed
+    top-5
+    right-5
+    glass
+    neon
+    rounded-2xl
+    p-5
+    z-50
+    fade
+  `
+
+  div.innerHTML = text
+
+  document.body.appendChild(div)
+
+  setTimeout(()=>{
+    div.remove()
+  },3000)
+
+}
+
+/* POSTS */
+
+function createPost(){
+
+  const input = document.getElementById("postInput")
+
+  if(!input.value.trim()) return
+
+  DB.posts.unshift({
+    text:input.value,
+    time:new Date().toLocaleString()
+  })
+
+  save()
+
+  input.value=""
+
+  renderPosts()
+
+}
+
+function renderPosts(){
+
+  const posts = document.getElementById("posts")
+
+  posts.innerHTML=""
+
+  DB.posts.forEach(post=>{
+
+    posts.innerHTML += `
+      <div class="glass rounded-3xl p-8 fade">
+
+        <div class="flex justify-between mb-5">
+
+          <h3 class="font-bold text-xl">
+            Administração
+          </h3>
+
+          <span class="text-zinc-500 text-sm">
+            ${post.time}
+          </span>
+
+        </div>
+
+        <p class="text-zinc-300">
+          ${post.text}
+        </p>
+
+      </div>
+    `
+  })
+
+}
+
+/* CHAT */
+
+function changeRoom(room){
+
+  currentRoom = room
+
+  document.getElementById("roomTitle")
+  .innerHTML = "💬 " + room
+
+  renderMessages()
+
+}
+
+function sendMessage(){
+
+  const input = document.getElementById("messageInput")
+
+  if(!input.value.trim()) return
+
+  DB.messages[currentRoom].push({
+    sender:"Você",
+    text:input.value
+  })
+
+  if(currentRoom==="IA"){
+
+    setTimeout(()=>{
+
+      DB.messages[currentRoom].push({
+        sender:"NEXUS IA",
+        text:generateAI(input.value)
+      })
+
+      save()
+      renderMessages()
+
+    },1000)
+
+  }
+
+  save()
+
+  input.value=""
+
+  renderMessages()
+
+}
+
+function renderMessages(){
+
+  const messages = document.getElementById("messages")
+
+  messages.innerHTML=""
+
+  DB.messages[currentRoom].forEach(msg=>{
+
+    messages.innerHTML += `
+      <div class="
+        p-5
+        rounded-2xl
+        fade
+        ${msg.sender==="Você"
+          ? "message-user"
+          : "message-ai"}
+      ">
+
+        <div class="font-bold mb-2">
+          ${msg.sender}
+        </div>
+
+        <div>
+          ${msg.text}
+        </div>
+
+      </div>
+    `
+  })
+
+}
+
+function generateAI(text){
+
+  const replies = [
+
+    "Analisando dados escolares...",
+    "A IA detectou melhoria no desempenho.",
+    "Sugiro revisar matemática.",
+    "Os alunos estão mais ativos hoje.",
+    "Nova atualização aplicada.",
+    "Sistema funcionando normalmente.",
+    "A frequência aumentou esta semana."
+
+  ]
+
+  return replies[
+    Math.floor(Math.random()*replies.length)
+  ]
+
+}
+
+/* EXAMS */
+
+function addExam(){
+
+  const subject = prompt("Matéria")
+
+  if(!subject) return
+
+  DB.exams.push({
+    subject,
+    date:new Date().toLocaleDateString()
+  })
+
+  save()
+
+  renderExams()
+
+}
+
+function renderExams(){
+
+  const list = document.getElementById("examList")
+
+  list.innerHTML=""
+
+  DB.exams.forEach(exam=>{
+
+    list.innerHTML += `
+      <div class="glass rounded-2xl p-5">
+
+        <div class="flex justify-between">
+
+          <div>
+
+            <h3 class="font-bold text-xl">
+              ${exam.subject}
+            </h3>
+
+            <p class="text-zinc-400">
+              ${exam.date}
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+    `
+  })
+
+}
+
+/* STUDENTS */
+
+function addStudent(){
+
+  const name = prompt("Nome do aluno")
+
+  if(!name) return
+
+  DB.students.push({
+    name,
+    level:Math.floor(Math.random()*100)
+  })
+
+  save()
+
+  renderStudents()
+
+}
+
+function renderStudents(){
+
+  const list = document.getElementById("studentsList")
+
+  list.innerHTML=""
+
+  DB.students.forEach(student=>{
+
+    list.innerHTML += `
+      <div class="glass rounded-3xl p-6">
+
+        <div class="text-5xl mb-4">
+          👨‍🎓
+        </div>
+
+        <h3 class="text-2xl font-bold">
+          ${student.name}
+        </h3>
+
+        <p class="text-zinc-400 mt-2">
+          Desempenho: ${student.level}%
+        </p>
+
+      </div>
+    `
+  })
+
+}
+
+/* SCHEDULE */
+
+function generateSchedule(){
+
+  const subjects = [
+    "Matemática",
+    "História",
+    "Português",
+    "Química",
+    "Física",
+    "Biologia",
+    "Artes",
+    "Robótica"
+  ]
+
+  const table = document.getElementById("scheduleTable")
+
+  table.innerHTML=""
+
+  for(let i=7;i<=12;i++){
+
+    let row = `
+      <tr>
+        <td class="glass rounded-2xl p-4">
+          ${i}:00
+        </td>
+    `
+
+    for(let d=0;d<5;d++){
+
+      row += `
+        <td class="glass rounded-2xl p-4">
+          ${
+            subjects[
+              Math.floor(Math.random()*subjects.length)
+            ]
+          }
+        </td>
+      `
+    }
+
+    row += `</tr>`
+
+    table.innerHTML += row
+
+  }
+
+}
+
+/* ADMIN */
+
+function backup(){
+
+  const blob = new Blob(
+    [JSON.stringify(DB,null,2)],
+    {type:"application/json"}
+  )
+
+  const a = document.createElement("a")
+
+  a.href = URL.createObjectURL(blob)
+
+  a.download = "nexus-backup.json"
+
+  a.click()
+
+}
+
+function clearData(){
+
+  localStorage.clear()
+
+  location.reload()
+
+}
+
+function fakeData(){
+
+  DB.posts.push({
+    text:"Novo aviso automático da IA",
+    time:new Date().toLocaleString()
+  })
+
+  DB.students.push({
+    name:"Aluno IA",
+    level:99
+  })
+
+  save()
+
+  renderPosts()
+  renderStudents()
+
+}
+
+function save(){
+
+  localStorage.setItem(
+    "posts",
+    JSON.stringify(DB.posts)
+  )
+
+  localStorage.setItem(
+    "messages",
+    JSON.stringify(DB.messages)
+  )
+
+  localStorage.setItem(
+    "exams",
+    JSON.stringify(DB.exams)
+  )
+
+  localStorage.setItem(
+    "students",
+    JSON.stringify(DB.students)
+  )
+
+  renderDB()
+
+}
+
+function renderDB(){
+
+  document.getElementById("db")
+  .textContent = JSON.stringify(DB,null,2)
+
+}
+
+/* CHARTS */
+
+new Chart(
+  document.getElementById("performanceChart"),
+  {
+    type:"line",
+    data:{
+      labels:[
+        "Jan",
+        "Fev",
+        "Mar",
+        "Abr",
+        "Mai",
+        "Jun"
+      ],
+      datasets:[{
+        label:"Desempenho",
+        data:[60,72,81,79,90,96],
+        borderColor:"#22d3ee",
+        backgroundColor:"rgba(34,211,238,.2)",
+        tension:.4,
+        fill:true
+      }]
+    }
+  }
+)
+
+new Chart(
+  document.getElementById("examChart"),
+  {
+    type:"doughnut",
+    data:{
+      labels:[
+        "Aprovados",
+        "Recuperação",
+        "Reprovados"
+      ],
+      datasets:[{
+        data:[76,18,6],
+        backgroundColor:[
+          "#22c55e",
+          "#f59e0b",
+          "#ef4444"
+        ]
+      }]
+    }
+  }
+)
+
+/* AI EFFECT */
+
+setInterval(()=>{
+
+  const students = document.getElementById("studentsCount")
+
+  students.innerHTML =
+    1200 + Math.floor(Math.random()*100)
+
+},3000)
+
+/* SEARCH */
+
+document
+.getElementById("globalSearch")
+.addEventListener("input",(e)=>{
+
+  const value = e.target.value.toLowerCase()
+
+  document.querySelectorAll(".glass")
+  .forEach(card=>{
+
+    card.style.display =
+      card.innerText.toLowerCase()
+      .includes(value)
+      ? ""
+      : "none"
+
+  })
+
+})
+
+</script>
+
+</body>
+</html>
+```
